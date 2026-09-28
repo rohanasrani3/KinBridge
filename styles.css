@@ -15,6 +15,7 @@
   --peach: #F2B999;
   --display: 'Fraunces', Georgia, serif;
   --body: 'Work Sans', 'Noto Sans HK', system-ui, sans-serif;
+  --zh: 'LXGW WenKai TC', 'Noto Serif HK', 'Songti TC', serif;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -63,7 +64,8 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid 
 .site-header .wrap { height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); font-family: var(--display); font-size: 23px; font-weight: 600; white-space: nowrap; }
 .brand:hover { color: var(--ink); }
-.brand-zh { font-family: 'Noto Sans HK', sans-serif; font-weight: 500; font-size: 18px; color: var(--muted); padding-left: 12px; border-left: 1px solid var(--line); }
+.brand-zh { font-family: var(--zh); font-weight: 700; font-size: 24px; letter-spacing: 0.06em; color: var(--green); padding-left: 12px; border-left: 1px solid var(--line); line-height: 1; }
+.zh { font-family: var(--zh); font-weight: 400; letter-spacing: 0.04em; }
 .nav { display: flex; align-items: center; gap: 30px; font-size: 16px; font-weight: 500; }
 .nav a:not(.btn) { color: var(--ink); text-decoration: none; padding: 6px 0; border-bottom: 2px solid transparent; }
 .nav a:not(.btn):hover { border-bottom-color: var(--line); }
@@ -110,6 +112,10 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid 
 .evidence p { font-size: 16px; color: var(--on-green); }
 
 /* Programme */
+.pair { font-size: 15px; color: var(--ink-2); display: flex; flex-direction: column; gap: 2px; }
+.pair span { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.pair.care { background: var(--sage); border-radius: 12px; padding: 10px 12px; }
+.pair.care span { color: var(--green); }
 .week .home-lab { margin-top: auto; border-top: 1px solid var(--line); padding-top: 12px; font-size: 15px; }
 .chips { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; font-size: 15px; }
 .chip { padding: 7px 15px; border-radius: 999px; background: var(--sand); }
