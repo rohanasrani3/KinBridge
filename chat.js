@@ -107,8 +107,9 @@
       done1: '🔨 Plank laid! Your first one is on the bridge.\n\nKiu did a small happy dance on the railing. Reply plank when you\'re ready for the next one.',
       doneN: '🔨 Plank laid! That\'s {n} on your bridge so far.\n\nKiu did a small happy dance on the railing. Reply plank when you\'re ready for the next one.',
       sceneAgain: 'Want another one? Reply scene.',
+      form: '📝 To join Parenting Foundations, start with the intake form. It asks about your goals, which sessions you can make and any support you need. Fill it in on screen or print it.\n\n👉 [Download the intake form](KinBridge_Intake_Form_Updated.pdf)\n👉 [How to send it](programme.html#enrol)',
       pay: '💳 Parenting Foundations is HK$1,399 per parent. The ways to pay are on the programme page.\n\n👉 [How to pay](programme.html#payment)',
-      help: 'Here\'s what Kiu can do:\n• 1, 2 or 3: open an item from the Bridge Post\n• plank: a small home goal for this week\n• scene: practise a real Hong Kong moment\n• done: tell me you tried your plank\n• post: show this week\'s Bridge Post again\n• price: course fee and how to pay\n• 中文 / English: switch language\n• pause: a quiet week\n• stop: no more Bridge Posts',
+      help: 'Here\'s what Kiu can do:\n• 1, 2 or 3: open an item from the Bridge Post\n• plank: a small home goal for this week\n• scene: practise a real Hong Kong moment\n• done: tell me you tried your plank\n• post: show this week\'s Bridge Post again\n• enrol: the intake form to join\n• price: course fee and how to pay\n• 中文 / English: switch language\n• pause: a quiet week\n• stop: no more Bridge Posts',
       hello: '👋 Hi! Kiu here. Reply post for this week\'s Bridge Post, or help to see everything I can do.',
       thanks: '🧡 Anytime. Kiu will be on the bridge.',
       pause: '🤫 Quiet week it is. Kiu will tiptoe off and won\'t send a new Bridge Post. Reply hi whenever you\'d like me back.',
@@ -149,8 +150,9 @@
       done1: '🔨 釘好！你第一塊木板已經喺橋上。\n\n橋仔喺欄杆上面跳咗隻開心舞。準備好就回覆「木板」攞下一塊。',
       doneN: '🔨 釘好！你條橋而家有 {n} 塊木板。\n\n橋仔喺欄杆上面跳咗隻開心舞。準備好就回覆「木板」攞下一塊。',
       sceneAgain: '想再試一個？回覆「場景」。',
+      form: '📝 想參加 Parenting Foundations，第一步係填登記表格。表格會問你嘅目標、可以出席邊幾堂，同埋你需唔需要額外支援。可以喺螢幕上填，或者印出嚟填。\n\n👉 [下載登記表格](KinBridge_Intake_Form_Updated.pdf)\n👉 [點樣交表](programme.html#enrol)',
       pay: '💳 Parenting Foundations 每位家長 HK$1,399。付款方法喺課程頁。\n\n👉 [點樣付款](programme.html#payment)',
-      help: '橋仔識做呢啲嘢：\n• 1、2 或 3：打開週報入面嘅項目\n• 木板：今個星期嘅家居小目標\n• 場景：練習一個香港家庭時刻\n• 完成：話俾我知你試咗\n• 週報：再睇今個星期嘅週報\n• 收費：課程費用同付款方法\n• English / 中文：轉語言\n• 暫停：休息一星期\n• 停止：唔再收週報',
+      help: '橋仔識做呢啲嘢：\n• 1、2 或 3：打開週報入面嘅項目\n• 木板：今個星期嘅家居小目標\n• 場景：練習一個香港家庭時刻\n• 完成：話俾我知你試咗\n• 週報：再睇今個星期嘅週報\n• 報名：參加課程嘅登記表格\n• 收費：課程費用同付款方法\n• English / 中文：轉語言\n• 暫停：休息一星期\n• 停止：唔再收週報',
       hello: '👋 你好！我係橋仔。回覆「週報」睇今個星期嘅週報，或者回覆「幫助」睇我識做咩。',
       thanks: '🧡 唔使客氣，橋仔一直喺橋度。',
       pause: '🤫 好，今個星期靜靜哋。橋仔會踮住腳走開，唔會再發新週報。想我返嚟就回覆「你好」。',
@@ -178,6 +180,7 @@
     check: ['check', 'quiz', 'self-check', 'self check', '自我檢查', '測驗'],
     talk: ['talk', 'taster', 'taster talk', '講座'],
     course: ['course', 'programme', 'program', '課程'],
+    form: ['form', 'enrol', 'enroll', 'join', 'sign up', 'apply', 'intake', 'intake form', '報名', '表格', '登記表格', '參加'],
     hello: ['hi', 'hello', 'hey', 'hi kiu', 'start', '你好', '哈囉', '開始', '橋仔'],
     thanks: ['thanks', 'thank you', 'thx', 'ty', '多謝', '唔該', '謝謝'],
     pause: ['pause', '暫停'],
@@ -287,6 +290,7 @@
       var key = is('check') ? 'check' : is('talk') ? 'talk' : 'course';
       return { text: OFFERS[key][prefs.lang].reply, ctx: null, chips: 'base' };
     }
+    if (is('form')) return { text: s.form, ctx: null, chips: 'base' };
     if (PRICE_RE.test(text)) return { text: s.pay, ctx: null, chips: 'base' };
     if (is('thanks')) return { text: s.thanks, chips: 'base' };
     if (is('pause')) { prefs.paused = true; return { text: s.pause, ctx: null, chips: null }; }
