@@ -31,7 +31,7 @@ Content lives in `src/content.ts` (lessons, skills), `src/measures.ts` (question
 ## Before launch
 
 - **Questionnaire wording.** `src/measures.ts` has only the example statements. Every item marked `pending` needs its licensed wording and licensed Chinese translation. Confirm the BPSES response scale too.
-- **Programme details.** `src/config.ts`: session times and venue, intake form link.
+- **Programme details.** `src/config.ts`: session times and venue, the facilitator contact shown after "Need help", intake form link.
 - **Enrolment codes** are not checked yet. Any code of 4+ characters is accepted (`src/app/onboarding.tsx`).
 - **Data stays on the phone.** Logs, reflections and check-in answers are saved on the device only (`src/store.tsx`). To see participants' data, the app needs a backend. Every change goes through `update()` in `src/store.tsx`, so that's where syncing goes. A privacy notice (PDPO) is needed before collecting this data.
 - **Chinese text** was written for this prototype. Have a native speaker review it.

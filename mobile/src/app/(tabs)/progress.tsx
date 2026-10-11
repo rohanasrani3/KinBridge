@@ -78,6 +78,26 @@ export default function Progress() {
         )}
       </Card>
 
+      {data.checks.length ? (
+        <Card style={{ gap: 12 }}>
+          <Text style={{ fontFamily: fonts.bodySemi, fontSize: 16, color: colors.ink }}>{t('dailyChecks')}</Text>
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            {(
+              [
+                ['tried', 'tried', colors.green],
+                ['help', 'needHelp', colors.accent],
+                ['missed', 'missedShort', colors.muted],
+              ] as const
+            ).map(([status, key, color]) => (
+              <View key={status} style={{ flex: 1, borderRadius: 14, backgroundColor: colors.ground, padding: 12, gap: 2 }}>
+                <Text style={{ fontFamily: fonts.display, fontSize: 28, color }}>{data.checks.filter((c) => c.status === status).length}</Text>
+                <Text style={{ fontFamily: fonts.body, fontSize: 13, color: colors.ink2 }}>{t(key)}</Text>
+              </View>
+            ))}
+          </View>
+        </Card>
+      ) : null}
+
       <Card style={{ gap: 12 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Text style={{ fontFamily: fonts.bodySemi, fontSize: 16, color: colors.ink }}>{t('practice')}</Text>

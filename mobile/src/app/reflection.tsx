@@ -1,11 +1,12 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { View } from 'react-native';
-import { GOAL_STEPS, SKILLS, skillLabel, type SkillId } from '@/content';
+import { Text, View } from 'react-native';
+import { GOAL_STEPS, HELPED_TAGS, OBSTACLE_TAGS, SKILLS, skillLabel, type SkillId } from '@/content';
 import { useT } from '@/i18n';
 import { logsInWeek, programmeWeek, useStore } from '@/store';
-import { Bar, Body, Button, Card, Choice, Eyebrow, Field, H1, Screen, TopBar } from '@/ui';
+import { Bar, Body, Button, Card, Chip, Choice, Eyebrow, H1, Screen, TopBar, styles } from '@/ui';
 
+// Weekly reflection: about 5 minutes, all taps, no typing.
 export default function ReflectionScreen() {
   const { data, update } = useStore();
   const { t, tx, lang } = useT();
@@ -14,10 +15,10 @@ export default function ReflectionScreen() {
 
   const [step, setStep] = useState(1);
   const [skill, setSkill] = useState<SkillId | undefined>(existing?.skill);
-  const [why, setWhy] = useState(existing?.why ?? '');
+  const [helped, setHelped] = useState<string[]>(existing?.helped ?? []);
   const [goalStep, setGoalStep] = useState<number | undefined>(existing?.goalStep);
   const [nextSkill, setNextSkill] = useState<SkillId | undefined>(existing?.nextSkill);
-  const [obstacle, setObstacle] = useState(existing?.obstacle ?? '');
+  const [obstacles, setObstacles] = useState<string[]>(existing?.obstacles ?? []);
 
   // Skills logged this week, most used first.
   const counts = new Map<SkillId, number>();
@@ -25,8 +26,10 @@ export default function ReflectionScreen() {
   const used = [...counts.entries()].sort((a, b) => b[1] - a[1]);
   const options: { id: SkillId; n?: number }[] = used.length ? used.map(([id, n]) => ({ id, n })) : SKILLS.filter((s) => s.id !== 'other').map((s) => ({ id: s.id }));
 
+  const toggle = (list: string[], set: (l: string[]) => void, id: string) => set(list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
+
   function finish() {
-    const r = { week, at: new Date().toISOString(), skill, why: why.trim() || undefined, goalStep, nextSkill, obstacle: obstacle.trim() || undefined };
+    const r = { week, at: new Date().toISOString(), skill, helped, goalStep, nextSkill, obstacles };
     update((d) => ({ ...d, reflections: [...d.reflections.filter((x) => x.week !== week), r] }));
     router.back();
   }
@@ -69,7 +72,7 @@ export default function ReflectionScreen() {
               />
             ))}
           </View>
-          <Field label={`${t('whyHelpful')} ${t('optional')}`} value={why} onChangeText={setWhy} multiline />
+          <TagGroup label={t('whatWorked')} hint={t('tapAny')} tags={HELPED_TAGS} selected={helped} onToggle={(id) => toggle(helped, setHelped, id)} tx={tx} />
         </>
       ) : null}
 
@@ -77,20 +80,20 @@ export default function ReflectionScreen() {
         <>
           <H1 style={{ fontSize: 26, lineHeight: 31 }}>{t('goalProgress')}</H1>
           {data.profile?.goal ? (
-            <Card style={{ gap: 4 }}>
-              <Eyebrow>{t('yourGoal')}</Eyebrow>
-              <Body>“{data.profile.goal}”</Body>
-            </Card>
+            <>
+              <Card style={{ gap: 4 }}>
+                <Eyebrow>{t('yourGoal')}</Eyebrow>
+                <Body>“{data.profile.goal}”</Body>
+              </Card>
+              <View style={{ gap: 10 }} accessibilityRole="radiogroup">
+                {GOAL_STEPS.map((g, i) => (
+                  <Choice key={i} label={tx(g)} selected={goalStep === i} onPress={() => setGoalStep(i)} />
+                ))}
+              </View>
+            </>
           ) : (
             <Body muted>{t('noGoal')}</Body>
           )}
-          {data.profile?.goal ? (
-            <View style={{ gap: 10 }} accessibilityRole="radiogroup">
-              {GOAL_STEPS.map((g, i) => (
-                <Choice key={i} label={tx(g)} selected={goalStep === i} onPress={() => setGoalStep(i)} />
-              ))}
-            </View>
-          ) : null}
         </>
       ) : null}
 
@@ -102,9 +105,39 @@ export default function ReflectionScreen() {
               <Choice key={s.id} label={tx(s.label)} selected={nextSkill === s.id} onPress={() => setNextSkill(s.id)} />
             ))}
           </View>
-          <Field label={`${t('obstacle')} ${t('optional')}`} value={obstacle} onChangeText={setObstacle} multiline />
+          <TagGroup label={t('obstacle')} hint={t('tapAny')} tags={OBSTACLE_TAGS} selected={obstacles} onToggle={(id) => toggle(obstacles, setObstacles, id)} tx={tx} />
         </>
       ) : null}
     </Screen>
+  );
+}
+
+function TagGroup({
+  label,
+  hint,
+  tags,
+  selected,
+  onToggle,
+  tx,
+}: {
+  label: string;
+  hint: string;
+  tags: { id: string; label: { en: string; zh: string } }[];
+  selected: string[];
+  onToggle: (id: string) => void;
+  tx: (t: { en: string; zh: string }) => string;
+}) {
+  return (
+    <View style={{ gap: 10 }}>
+      <View>
+        <Text style={[styles.label, { fontSize: 16 }]}>{label}</Text>
+        <Text style={styles.help}>{hint}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+        {tags.map((tag) => (
+          <Chip key={tag.id} label={tx(tag.label)} selected={selected.includes(tag.id)} onPress={() => onToggle(tag.id)} />
+        ))}
+      </View>
+    </View>
   );
 }

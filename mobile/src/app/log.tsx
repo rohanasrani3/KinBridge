@@ -23,6 +23,7 @@ export default function LogPractice() {
   const [skills, setSkills] = useState<SkillId[]>(initial);
   const [outcome, setOutcome] = useState<Outcome | undefined>();
   const [note, setNote] = useState('');
+  const [showNote, setShowNote] = useState(false);
   const [when, setWhen] = useState<When>('now');
 
   function toggle(id: SkillId) {
@@ -79,7 +80,16 @@ export default function LogPractice() {
         </View>
       </View>
 
-      <Field label={`${t('whatHappened')} ${t('optional')}`} value={note} onChangeText={setNote} multiline help={t('privacyNote')} />
+      {showNote ? (
+        <Field label={`${t('whatHappened')} ${t('optional')}`} value={note} onChangeText={setNote} multiline help={t('privacyNote')} />
+      ) : (
+        <Pressable onPress={() => setShowNote(true)} accessibilityRole="button" style={{ minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+          <Icon name="plus" size={18} color={colors.accent} />
+          <Text style={{ fontFamily: fonts.bodySemi, fontSize: 15, color: colors.accent }}>
+            {t('addNote')} {t('optional')}
+          </Text>
+        </Pressable>
+      )}
 
       <View style={{ gap: 12 }}>
         <Text style={[styles.label, { fontSize: 16 }]}>{t('when')}</Text>

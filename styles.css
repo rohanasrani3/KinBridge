@@ -119,6 +119,7 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid 
 .week .home-lab { margin-top: auto; border-top: 1px solid var(--line); padding-top: 12px; font-size: 15px; }
 .chips { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; font-size: 15px; }
 .chip { padding: 7px 15px; border-radius: 999px; background: var(--sand); }
+.sand .chip { background: var(--paper); }
 .price { font-family: var(--display); font-size: 44px; line-height: 1; }
 .card ul { margin: 0; padding-left: 20px; font-size: 16px; display: flex; flex-direction: column; gap: 5px; }
 .card.green ul, .card.green .muted { color: var(--on-green); }

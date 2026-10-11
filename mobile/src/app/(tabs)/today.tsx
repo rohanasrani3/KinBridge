@@ -1,24 +1,30 @@
 import { router } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 import { config } from '@/config';
-import { LESSONS } from '@/content';
-import { useT } from '@/i18n';
-import { dayKey, newId, programmeWeek, useStore, weekStart } from '@/store';
+import { LESSONS, practiceFor } from '@/content';
+import { useT, type Key } from '@/i18n';
+import { dayKey, programmeWeek, setDailyCheck, useStore, weekStart, type CheckStatus } from '@/store';
 import { colors, fonts } from '@/theme';
-import { Body, Button, Card, Eyebrow, H1, Icon, Screen } from '@/ui';
+import { Body, Button, Card, Eyebrow, H1, Icon, Screen, type IconName } from '@/ui';
+
+const ANSWERS: { status: CheckStatus; key: Key; icon: IconName }[] = [
+  { status: 'tried', key: 'tried', icon: 'check-circle-outline' },
+  { status: 'help', key: 'needHelp', icon: 'lifebuoy' },
+  { status: 'missed', key: 'missed', icon: 'calendar-remove-outline' },
+];
 
 export default function Today() {
   const { data, update } = useStore();
   const { t, tx, lang } = useT();
   const now = new Date();
   const week = programmeWeek(data.profile, now);
-  const lesson = LESSONS[week - 1];
+  const practice = practiceFor(week, now);
   const hour = now.getHours();
   const greet = hour < 12 ? t('morning') : hour < 18 ? t('afternoon') : t('evening');
 
   const todayKey = dayKey(now);
+  const todayCheck = data.checks.find((c) => c.day === todayKey);
   const loggedDays = new Set(data.logs.map((l) => dayKey(new Date(l.at))));
-  const goalDoneToday = data.logs.some((l) => dayKey(new Date(l.at)) === todayKey && l.skills.includes(lesson.skill));
 
   const monday = weekStart(now);
   const days = Array.from({ length: 7 }, (_, i) => {
@@ -32,13 +38,13 @@ export default function Today() {
   const reflectionDone = data.reflections.some((r) => r.week === week);
   const nextLesson = week < LESSONS.length ? week + 1 : null;
 
-  function quickLog() {
-    update((d) => ({ ...d, logs: [{ id: newId(), at: new Date().toISOString(), skills: [lesson.skill] }, ...d.logs] }));
+  function answer(status: CheckStatus) {
+    update((d) => setDailyCheck(d, practice, status));
   }
 
   return (
     <View style={{ flex: 1 }}>
-      <Screen contentStyle={{ paddingBottom: 110, gap: 16 }}>
+      <Screen contentStyle={{ gap: 16 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <View style={{ gap: 2, flex: 1 }}>
             <Eyebrow>{t('week', { n: week, t: config.programmeWeeks })}</Eyebrow>
@@ -58,22 +64,53 @@ export default function Today() {
           </Pressable>
         </View>
 
-        <Card tone="green" style={{ borderRadius: 24, padding: 22 }}>
-          <Eyebrow color={colors.peach}>{t('todayGoal')}</Eyebrow>
-          <Text style={{ fontFamily: fonts.display, fontSize: 24, lineHeight: 30, color: colors.ground }}>{tx(lesson.goal)}</Text>
-          <Text style={{ fontFamily: fonts.body, fontSize: 15, lineHeight: 22, color: colors.onGreen }}>{tx(lesson.tip)}</Text>
-          <View style={{ flexDirection: 'row', gap: 10, marginTop: 6 }}>
-            <Button
-              label={goalDoneToday ? t('doneToday') : t('didIt')}
-              icon={goalDoneToday ? 'check' : undefined}
-              variant="light"
-              onPress={quickLog}
-              disabled={goalDoneToday}
-              style={{ flex: 1, minHeight: 48 }}
-            />
-            <Button label={t('addDetails')} variant="outlineLight" onPress={() => router.push({ pathname: '/log', params: { skill: lesson.skill } })} style={{ flex: 1, minHeight: 48 }} />
+        <Card tone="green" style={{ borderRadius: 24, padding: 22, gap: 12 }}>
+          <Eyebrow color={colors.peach}>{t('todayPractice', { n: practice.minutes })}</Eyebrow>
+          <Text style={{ fontFamily: fonts.display, fontSize: 24, lineHeight: 30, color: colors.ground }}>{tx(practice.text)}</Text>
+          <Text style={{ fontFamily: fonts.body, fontSize: 15, lineHeight: 22, color: colors.onGreen }}>{tx(practice.how)}</Text>
+          <Text style={{ fontFamily: fonts.bodySemi, fontSize: 15, color: colors.ground, marginTop: 6 }}>{t('didYouTry')}</Text>
+          <View style={{ flexDirection: 'row', gap: 8 }} accessibilityRole="radiogroup">
+            {ANSWERS.map((a) => {
+              const on = todayCheck?.status === a.status;
+              return (
+                <Pressable
+                  key={a.status}
+                  onPress={() => answer(a.status)}
+                  accessibilityRole="radio"
+                  accessibilityState={{ checked: on }}
+                  style={{
+                    flex: 1,
+                    minHeight: 68,
+                    borderRadius: 16,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 4,
+                    paddingHorizontal: 4,
+                    backgroundColor: on ? colors.ground : 'transparent',
+                    borderWidth: 1.5,
+                    borderColor: on ? colors.ground : colors.onGreen,
+                  }}
+                >
+                  <Icon name={a.icon} size={22} color={on ? colors.green : colors.ground} />
+                  <Text style={{ fontFamily: fonts.bodySemi, fontSize: 13, textAlign: 'center', color: on ? colors.ink : colors.ground }}>{t(a.key)}</Text>
+                </Pressable>
+              );
+            })}
           </View>
+          {todayCheck?.status === 'tried' ? <Text style={{ fontFamily: fonts.body, fontSize: 14, color: colors.onGreen }}>{t('triedMsg')}</Text> : null}
+          {todayCheck?.status === 'missed' ? <Text style={{ fontFamily: fonts.body, fontSize: 14, color: colors.onGreen }}>{t('missedMsg')}</Text> : null}
         </Card>
+
+        {todayCheck?.status === 'help' ? (
+          <Card style={{ gap: 10, borderColor: colors.accent, borderWidth: 1.5 }}>
+            <Eyebrow>{t('helpTitle')}</Eyebrow>
+            <Body>{tx(practice.help)}</Body>
+            <Body muted style={{ fontSize: 14 }}>
+              {t('facilitator')}: {tx(config.facilitatorContact)}
+            </Body>
+            <Button label={t('askKiu')} icon="chat-outline" variant="ghost" onPress={() => router.push('/kiu')} />
+          </Card>
+        ) : null}
 
         <Card>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -104,6 +141,10 @@ export default function Today() {
               );
             })}
           </View>
+          <Pressable onPress={() => router.push('/log')} accessibilityRole="button" style={{ minHeight: 40, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <Icon name="plus" size={18} color={colors.accent} />
+            <Text style={{ fontFamily: fonts.bodySemi, fontSize: 15, color: colors.accent }}>{t('logMore')}</Text>
+          </Pressable>
         </Card>
 
         <Pressable onPress={() => router.push('/reflection')} accessibilityRole="button">
@@ -129,10 +170,6 @@ export default function Today() {
           </Card>
         ) : null}
       </Screen>
-
-      <View style={{ position: 'absolute', right: 20, bottom: 20 }}>
-        <Button label={t('logPractice')} icon="plus" variant="accent" onPress={() => router.push('/log')} style={{ borderRadius: 18, minHeight: 56, elevation: 4 }} />
-      </View>
     </View>
   );
 }

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Linking, Pressable, Text, View } from 'react-native';
 import type { Lang } from '@/content';
 import { useT } from '@/i18n';
-import { useStore } from '@/store';
+import { EMPTY, useStore } from '@/store';
 import { colors, fonts } from '@/theme';
 import { Body, Button, Card, Field, H1, Screen, TopBar, styles } from '@/ui';
 
@@ -20,7 +20,7 @@ export default function Settings() {
 
   function reset() {
     if (!confirmReset) return setConfirmReset(true);
-    update((d) => ({ lang: d.lang, profile: null, logs: [], reflections: [], checkins: {} }));
+    update((d) => ({ ...EMPTY, lang: d.lang }));
     router.replace('/onboarding');
   }
 

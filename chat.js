@@ -71,9 +71,9 @@
         reply: '🎤 體驗講座免費，30 分鐘，喺合作中心同路演舉行，完咗可以帶走一份入門資料包。\n\n👉 [登記興趣](programme.html#join)' } },
     course: {
       en: { line: '📚 Parenting Foundations: four 90-minute lessons, in person or live online.', cta: 'for the details',
-        reply: '📚 Parenting Foundations has four lessons:\n• Understanding Your Child\'s Changing Needs\n• Encouraging Positive Behaviour\n• Managing Stress and Strengthening Family Bonds\n• Communicating with Empathy\n\nEach one is 90 minutes: a real scenario, a short reflection, and one small home goal. HK$1,399 per parent.\n\n👉 [See the programme](programme.html)' },
+        reply: '📚 Parenting Foundations has four lessons:\n• Understanding Your Child\'s Changing Needs\n• Encouraging Positive Behaviour\n• Managing Stress and Strengthening Family Bonds\n• Communicating with Empathy\n\nEach one is 90 minutes: a real scenario, a short reflection, and a 1–3 minute practice to try each day. Sessions are led by Registered Social Workers, Educational Psychologists or health professionals experienced in parenting education. HK$1,399 per parent.\n\n👉 [See the programme](programme.html)' },
       zh: { line: '📚 Parenting Foundations：四堂 90 分鐘課堂，可以親身或網上直播上。', cta: '睇詳情',
-        reply: '📚 Parenting Foundations 一共四課：\n• 了解孩子不斷轉變的需要\n• 鼓勵正面行為\n• 管理壓力，加強親子關係\n• 以同理心溝通\n\n每堂 90 分鐘：一個真實場景、一段簡短反思、一個家居小目標。每位家長 HK$1,399。\n\n👉 [睇課程](programme.html)' } },
+        reply: '📚 Parenting Foundations 一共四課：\n• 了解孩子不斷轉變的需要\n• 鼓勵正面行為\n• 管理壓力，加強親子關係\n• 以同理心溝通\n\n每堂 90 分鐘：一個真實場景、一段簡短反思，同每日 1–3 分鐘嘅小練習。課堂由註冊社工、教育心理學家，或有家長教育經驗嘅醫護專業人員帶領。每位家長 HK$1,399。\n\n👉 [睇課程](programme.html)' } },
     research: {
       en: { line: '📖 From the research: in a Hong Kong trial, two short positive-parenting talks shifted family outcomes.', cta: 'to read more',
         reply: '📖 That\'s one of the studies behind our approach. Another: a local parent-education programme moved parents towards warm-and-structured parenting and lowered their stress.\n\n👉 [See our approach](approach.html)' },

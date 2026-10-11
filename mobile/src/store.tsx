@@ -9,19 +9,23 @@ import type { Checkins } from './measures';
 
 export type Outcome = 'hard' | 'ok' | 'well';
 export type LogEntry = { id: string; at: string; skills: SkillId[]; outcome?: Outcome; note?: string };
-export type Reflection = { week: number; at: string; skill?: SkillId; why?: string; goalStep?: number; nextSkill?: SkillId; obstacle?: string };
+export type CheckStatus = 'tried' | 'help' | 'missed';
+// One single-tap answer per day to "Did you try the practice today?"
+export type DailyCheck = { day: string; practice: string; status: CheckStatus; at: string };
+export type Reflection = { week: number; at: string; skill?: SkillId; helped?: string[]; goalStep?: number; nextSkill?: SkillId; obstacles?: string[] };
 export type Profile = { name: string; code: string; goal: string; startedAt: string };
 
 export type Data = {
   lang: Lang;
   profile: Profile | null;
   logs: LogEntry[];
+  checks: DailyCheck[];
   reflections: Reflection[];
   checkins: Checkins;
 };
 
 const KEY = 'kinbridge-app-v1';
-const EMPTY: Data = { lang: 'en', profile: null, logs: [], reflections: [], checkins: {} };
+export const EMPTY: Data = { lang: 'en', profile: null, logs: [], checks: [], reflections: [], checkins: {} };
 
 type Store = {
   ready: boolean;
@@ -83,6 +87,16 @@ export function programmeWeek(profile: Profile | null, now = new Date()) {
   if (!profile) return 1;
   const days = Math.floor((weekStart(now).getTime() - weekStart(new Date(profile.startedAt)).getTime()) / 86400000);
   return Math.min(config.programmeWeeks, Math.max(1, Math.floor(days / 7) + 1));
+}
+
+// Record today's single-tap answer. "Tried it" also adds a practice log (removed again if the answer changes).
+export function setDailyCheck(d: Data, practice: { id: string; skill: SkillId }, status: CheckStatus, now = new Date()): Data {
+  const day = dayKey(now);
+  const logId = `check-${day}`;
+  const logs = d.logs.filter((l) => l.id !== logId);
+  if (status === 'tried') logs.unshift({ id: logId, at: now.toISOString(), skills: [practice.skill] });
+  const checks = [...d.checks.filter((c) => c.day !== day), { day, practice: practice.id, status, at: now.toISOString() }];
+  return { ...d, logs, checks };
 }
 
 export function logsInWeek(logs: LogEntry[], now = new Date()) {

@@ -5,5 +5,8 @@ export const config = {
   // The post-course check-in opens from this programme week.
   postCheckinWeek: 4,
   programmeWeeks: 4,
+  // Shown when a parent taps "Need help". Sessions are led by RSWs, Educational Psychologists
+  // or health professionals experienced in parenting education.
+  facilitatorContact: { en: '[Facilitator WhatsApp or email]', zh: '[導師 WhatsApp 或電郵]' },
   intakeFormUrl: 'https://[your-website]/KinBridge_Intake_Form_Updated.pdf',
 };
